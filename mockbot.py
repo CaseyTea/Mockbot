@@ -2,10 +2,8 @@ import discord
 from discord.ext import commands
 import os
 
-intents = discord.Intents.default()
-intents.members = True
-intents.message_content = True
 bot = discord.Bot()
+print("The bot is now running")
 
 # Create funtion for mocked text
 def create_mock(msg): 
@@ -23,15 +21,20 @@ async def mock(
         message: discord.Option(str, "The custom message to mock", required=False), 
         ):
     if user:
-
+        print("We get into the user slash command here") 
         try:
             # Fetch the last 100 messages in the channel
+            print("This is what is inside the message list:")
+            print(ctx.channel.history(limit=20))
             async for message in (ctx.channel.history(limit=20)):
                 if message.author == user:
+                    print(user)
+                    print(f"\nWe find the user's message here: {message.content}")
                     # Mock the message content
                     mocked_text = create_mock(message.content)
                     print(f" This is the message: {mocked_text}")
-                    await ctx.respond(f" : {mocked_text}")
+                    await ctx.respond(f"{mocked_text}")
+                    return
         # Error Checking 
             await ctx.respond(f"No recent messages found from {user.display_name} in this channel.")
         except discord.Forbidden as e:
@@ -42,11 +45,12 @@ async def mock(
             await ctx.respond("An error occurred. Please try again later.")     
     # Check if the user entered in a message 
     elif message: 
+        print(f"There is where the custom message is createed: {message}")
         mocked_message = create_mock(message)
-        print(f"This is the message: {mocked_message}")
         await ctx.respond(f": {mocked_message}")
 
 @bot.slash_command(name="hello", description="Say hello to the bot")
 async def hello(ctx: discord.ApplicationContext):
     await ctx.respond("Hey!")
 
+bot.run(os.environ["DISCORD_TOKEN"])
