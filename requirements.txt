@@ -1,3 +1,2 @@
 py-cord
 python-dotenv
-discord.py
