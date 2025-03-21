@@ -29,8 +29,8 @@ MockBot is a fun and interactive Discord bot that mocks users by alternating the
 ---
 
 ## **How It Works**
-1. The bot listens for the `/mock @User` command in a Discord channel.
-2. It fetches the last 100 messages in the channel and finds the most recent message from the specified user.
+1. The bot listens for the `/mock @User` command or `/mock [message]` in a Discord channel.
+2. It fetches the last 20 messages in the channel and finds the most recent message from the specified user.
 3. The bot mocks the message by alternating uppercase and lowercase letters.
 4. The mocked message is sent back to the channel.
 
