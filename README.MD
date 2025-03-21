@@ -88,16 +88,26 @@ MockBot is a fun and interactive Discord bot that mocks users by alternating the
    docker tag mockbot <YourRegistryName>.azurecr.io/mockbot:latest
    docker push <YourRegistryName>.azurecr.io/mockbot:latest
    ```
+- There can be issues with Azure Container Instance reconizing your OS in docker. You may need to specify the Linux architecture like I did: 
+   ```bash
+   docker buildx build --platform linux/amd64 -t mockbotregistry.azurecr.io/mockbot:v2 --push .
+   ```
 
 4. **Create an Azure Container Instance (ACI)**:
    ```bash
    az container create \
-     --resource-group <YourResourceGroup> \
-     --name mockbot \
-     --image <YourRegistryName>.azurecr.io/mockbot:latest \
-     --dns-name-label mockbot \
-     --ports 80 \
-     --environment-variables DISCORD_TOKEN=your_discord_bot_token
+     --resource-group Discord.bot \
+     --name mockbot-container \
+     --image mockbotregistry.azurecr.io/mockbot:latest \
+     --cpu 1 \
+     --memory 1 \
+     --registry-login-server mockbotregistry.azurecr.io \
+     --registry-username mockbotregistry \
+     --registry-password your_password
+     --environment-variables DISCORD_TOKEN=your_discord_bot_token/
+     --restart-policy Always \
+     --location your_server_location
+     --os-type Linux
    ```
 
 5. **Verify Deployment**:
