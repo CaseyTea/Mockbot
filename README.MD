@@ -38,6 +38,74 @@ MockBot is a fun and interactive Discord bot that mocks users by alternating the
 
 ## **Setup and Deployment**
 
+### **Local Development**
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/your-username/mockbot.git
+   cd mockbot
+   ```
+
+2. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Set Environment Variables**:
+   Create a `.env` file in the root directory:
+   ```
+   DISCORD_TOKEN=your_discord_bot_token
+   ```
+
+4. **Run the Bot Locally**:
+   ```bash
+   python bot.py
+   ```
+
+### **Docker Setup**
+1. **Build the Docker Image**:
+   ```bash
+   docker build -t mockbot .
+   ```
+
+2. **Run the Docker Container Locally**:
+   ```bash
+   docker run -e DISCORD_TOKEN=your_discord_bot_token mockbot
+   ```
+
+### **Deployment to Azure**
+1. **Create an Azure Container Registry (ACR)**:
+   ```bash
+   az acr create --resource-group <YourResourceGroup> --name <YourRegistryName> --sku Basic
+   ```
+
+2. **Log in to ACR**:
+   ```bash
+   az acr login --name <YourRegistryName>
+   ```
+
+3. **Tag and Push the Docker Image**:
+   ```bash
+   docker tag mockbot <YourRegistryName>.azurecr.io/mockbot:latest
+   docker push <YourRegistryName>.azurecr.io/mockbot:latest
+   ```
+
+4. **Create an Azure Container Instance (ACI)**:
+   ```bash
+   az container create \
+     --resource-group <YourResourceGroup> \
+     --name mockbot \
+     --image <YourRegistryName>.azurecr.io/mockbot:latest \
+     --dns-name-label mockbot \
+     --ports 80 \
+     --environment-variables DISCORD_TOKEN=your_discord_bot_token
+   ```
+
+5. **Verify Deployment**:
+   Check the status of your container instance:
+   ```bash
+   az container show --resource-group <YourResourceGroup> --name mockbot --query "instanceView.state"
+   ```
+
 ### **Prerequisites**
 - Python 3.9 or higher
 - Docker installed locally
