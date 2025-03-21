@@ -1,0 +1,131 @@
+# **MockBot - A Discord Bot for Mocking Users**
+
+![Azure](https://img.shields.io/badge/Azure-Cloud-blue)
+![Python](https://img.shields.io/badge/Python-3.9-green)
+![Docker](https://img.shields.io/badge/Docker-Container-orange)
+![Discord](https://img.shields.io/badge/Discord-Bot-purple)
+
+MockBot is a fun and interactive Discord bot that mocks users by alternating the case of their messages. It is hosted on **Azure Container Instances (ACI)** and deployed using **Docker**. This project demonstrates my skills in Python, Docker, Azure, and DevOps.
+
+---
+
+## **Features**
+- **Mock Command**: Mocks a user's last message in the current channel.
+- **Slash Commands**: Built using `py-cord` for seamless integration with Discord.
+- **Azure Hosting**: Deployed on Azure Container Instances for scalability and reliability.
+- **Dockerized**: Containerized for easy deployment and environment consistency.
+
+---
+
+## **Technologies Used**
+- **Programming Language**: Python
+- **Libraries**: `py-cord` (Discord API wrapper)
+- **Cloud Platform**: Microsoft Azure
+  - Azure Container Instances (ACI)
+  - Azure Container Registry (ACR)
+- **Containerization**: Docker
+- **Version Control**: Git/GitHub
+
+---
+
+## **How It Works**
+1. The bot listens for the `/mock @User` command or `/mock [message]` in a Discord channel.
+2. It fetches the last 20 messages in the channel and finds the most recent message from the specified user.
+3. The bot mocks the message by alternating uppercase and lowercase letters.
+4. The mocked message is sent back to the channel.
+
+---
+
+## **Setup and Deployment**
+
+### **Local Development**
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/your-username/mockbot.git
+   cd mockbot
+   ```
+
+2. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Set Environment Variables**:
+   Create a `.env` file in the root directory:
+   ```
+   DISCORD_TOKEN=your_discord_bot_token
+   ```
+
+4. **Run the Bot Locally**:
+   ```bash
+   python bot.py
+   ```
+
+### **Docker Setup**
+1. **Build the Docker Image**:
+   ```bash
+   docker build -t mockbot .
+   ```
+
+2. **Run the Docker Container Locally**:
+   ```bash
+   docker run -e DISCORD_TOKEN=your_discord_bot_token mockbot
+   ```
+
+### **Deployment to Azure**
+1. **Create an Azure Container Registry (ACR)**:
+   ```bash
+   az acr create --resource-group <YourResourceGroup> --name <YourRegistryName> --sku Basic
+   ```
+
+2. **Log in to ACR**:
+   ```bash
+   az acr login --name <YourRegistryName>
+   ```
+
+3. **Tag and Push the Docker Image**:
+   ```bash
+   docker tag mockbot <YourRegistryName>.azurecr.io/mockbot:latest
+   docker push <YourRegistryName>.azurecr.io/mockbot:latest
+   ```
+- There can be issues with Azure Container Instance reconizing your OS in docker. You may need to specify the Linux architecture like I did: 
+   ```bash
+   docker buildx build --platform linux/amd64 -t mockbotregistry.azurecr.io/mockbot:v2 --push .
+   ```
+
+4. **Create an Azure Container Instance (ACI)**:
+   ```bash
+   az container create \
+     --resource-group Discord.bot \
+     --name mockbot-container \
+     --image mockbotregistry.azurecr.io/mockbot:latest \
+     --cpu 1 \
+     --memory 1 \
+     --registry-login-server mockbotregistry.azurecr.io \
+     --registry-username mockbotregistry \
+     --registry-password your_password
+     --environment-variables DISCORD_TOKEN=your_discord_bot_token/
+     --restart-policy Always \
+     --location your_server_location
+     --os-type Linux
+   ```
+
+5. **Verify Deployment**:
+   Check the status of your container instance:
+   ```bash
+   az container show --resource-group <YourResourceGroup> --name mockbot --query "instanceView.state"
+   ```
+
+### **Prerequisites**
+- Python 3.9 or higher
+- Docker installed locally
+- Azure account (free tier available)
+- Discord bot token (from the [Discord Developer Portal](https://discord.com/developers/applications))
+
+---
+
+### **Local Development**
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/your-username/mockbot.git
+   cd mockbot
